@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jxust.leave.dao.StuLeaForProsMapper">
+
+    <select id="selectByLimitAndOffset" resultType="cn.jxust.leave.po.vo.StuLeaForPros">
+        SELECT
+        s.id,s.name,s.card_number,s.clazz,s.phone_number,s.grade,le.start_time,le.end_time,
+        m.major,le.state AS leave_form_state
+        FROM student s
+        INNER JOIN leave_form le
+        ON s.id=le.student_id
+        INNER JOIN major m
+        ON s.major_id=m.id
+        order by le.start_time desc
+        LIMIT
+        #{offset},#{limit}
+    </select>
+    <select id="countOnes" resultType="java.lang.Integer">
+        SELECT
+        COUNT(*)
+        FROM student s
+        INNER JOIN leave_form le
+        ON s.id=le.student_id
+    </select>
+
+    <select id="selectStuLeaForProsByCardNumberLike"
+            resultType="cn.jxust.leave.po.vo.StuLeaForPros">
+        SELECT
+        s.id,s.name,s.card_number,s.clazz,s.phone_number,s.grade,le.start_time,le.end_time,
+        m.major,le.state AS leave_form_state
+        FROM student s
+        INNER JOIN leave_form le
+        ON s.id=le.student_id
+        INNER JOIN major m
+        ON s.major_id=m.id
+        WHERE
+        s.card_number LIKE CONCAT('%',#{cardNumber},'%')
+    </select>
+
+
+
+
+</mapper>

@@ -1,0 +1,227 @@
+/*①index.html 四个标签样式*/
+.alertgroup{
+    display:flex;
+    justify-content:space-between;
+    flex-flow:wrap;
+    flex-direction:row;
+    padding:0;
+    padding-bottom:30px;
+}
+.alert{
+    height:130px;
+    flex:1;
+    margin:10px;
+    padding:30px;
+    position:relative;
+}
+div.more{
+    width:100%;
+    height:25px;
+    border:1px solid #ccc;
+    position:absolute;
+    bottom:0;
+    left:0;
+    opacity:0.4;
+}
+div.more:hover{
+    opacity: 0.6;
+}
+div.more a{
+    margin:3px;
+    text-align:center;
+    line-height:20px;
+    font-size:14px;
+    text-decoration: none;
+}
+div.more span.num{
+    position:absolute;
+    right:8px;
+    bottom:60px;
+    font-size:25px;
+}
+div.more p{
+    position:absolute;
+    right:8px;
+    bottom:30px;
+    font-size:15px;
+}
+
+/*请假人数统计*/
+span.day a {
+    border-radius: 15px;
+    font-size: 10px;
+    line-height: 8px;
+}
+
+
+/*请假具体资料*/
+
+/*今日任务和项目进度*/
+div.col-sm-offset-2{
+    padding-top:10px;
+}
+
+/*②ApplyForLeave.html 承诺书*/
+.promise{
+    width:304px;
+    height:124px;
+    border:3px solid #ddd;
+	padding-right:10px;
+	padding-left:5px;
+	margin-top:20px;
+}
+.promise h5{
+    font-weight:bold;
+	margin-top:-10px;
+}
+.promise p{
+    font-weight:normal;
+    padding-left:15px;
+}
+
+/*③打印模态框*/
+div#modal div.left .well p{
+    font-size:15px;
+}
+div#modal div.right p{
+    font-size:20px;
+}
+div#modal div.right .promise{
+    width:253px;
+    height:99px;
+    border:3px solid #ddd;
+    padding-right:10px;
+    padding-left:5px;
+    position: absolute;
+    top:250px;
+    left:300px;
+}
+
+/*④批量导入*/
+div.import p{
+    font-size:18px;
+    color: #666666;
+    padding:30px 20px 0 0;
+}
+div.import a{
+    font-size:16px;
+    padding-left:30px;
+}
+div.import ol{
+    font-size:16px;
+    color: #e20000;
+    font-weight:bold;
+}
+
+/*⑤删除班级*/
+div.deleteClass p{
+    font-size:16px;
+    color: #e20000;
+    font-weight:bold;
+}
+
+/*⑦登陆日志*/
+div.loginLog{
+    padding-top:20px;
+    padding-left:20px;
+}
+div.loginLog span{
+    font-size:18px;
+    color:#43b8cb
+}
+div.loginLog p{
+    font-size:14px;
+}
+/*⑧模态框*/
+#modal{
+    width:1200px;
+    height:700px;
+    overflow:auto;
+    display:none;
+    position:fixed;
+    border: #ebebeb solid 1px;
+    top:50%;
+    left:50%;
+    background-color:#fff;
+    z-index: 1;
+    transform:translate(-50%,-50%);
+}
+/*.hidden-bg{*/
+/*    display:none;*/
+/*    width:100%;*/
+/*    height:100%;*/
+/*    position:fixed;*/
+/*    top:0;*/
+/*    left:0;*/
+/*    !*background-color: rgba(0,0,0,.4);*!*/
+/*    background:red;*/
+/*}*/
+#closeBtn{
+    position: absolute;
+    font-size: 16px;
+    right: -90px;
+    bottom:20px;
+    background:#fff;
+    text-align:center;
+    line-height: 60px;
+    border: #ebebeb solid 1px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+/* 学生首页轮播图 */
+ .slider {
+            height:100%;
+            width: 100%;
+            right:20px;
+            position: relative;
+        }
+        .slider li {
+            position: absolute;
+            display: none;
+            list-style: none;
+        }
+
+        .slider li:first-child {
+            display: block;
+        }
+
+
+        .arrow {
+            display: none;
+        }
+
+        .slider:hover .arrow {
+            display: block;
+        }
+
+        .arrow-left,
+        .arrow-right {
+            font-family: "SimSun", "宋体";
+            width: 25px;
+            height: 35px;
+            background-color: rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 50%;
+            margin-top: 40px;
+            cursor: pointer;
+            text-align: center;
+            line-height: 35px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .arrow-left:hover,
+        .arrow-right:hover {
+            background-color: rgba(0, 0, 0, .5);
+        }
+
+        .arrow-left {
+            left: 40px;
+        }
+
+        .arrow-right {
+            right: 0;
+        }

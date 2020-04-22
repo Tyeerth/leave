@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jxust.leave.dao.StudentMapper">
+    <!--create by tyeerth-->
+
+    <resultMap id="StudentResultMap" type="cn.jxust.leave.po.Student">
+        <id property="id" column="id"/>
+        <result property="name" column="name"></result>
+        <result property="gender" column="gender"></result>
+        <result property="university" column="university"></result>
+        <result property="cardNumber" column="card_number"></result>
+        <result property="password" column="password"></result>
+        <result property="address" column="address"></result>
+        <result property="phoneNumber" column="phone_number"></result>
+        <result property="buildingId" column="building_id"></result>
+        <result property="dormitory" column="dormitory"></result>
+        <result property="mail" column="mail"></result>
+        <result property="state" column="state"></result>
+        <result property="clazz" column="clazz"></result>
+        <result property="grade" column="grade"></result>
+        <association property="role" javaType="cn.jxust.leave.po.Role">
+            <id column="role_id" property="id"></id>
+            <result property="role" column="role"></result>
+        </association>
+        <association property="academy" javaType="cn.jxust.leave.po.Academy">
+            <id column="academy_id" property="id"/>
+            <result property="academy" column="academy"></result>
+        </association>
+
+        <association property="major" javaType="cn.jxust.leave.po.Major">
+            <id column="major_id" property="id"></id>
+            <result property="major" column="major"></result>
+        </association>
+        <association property="campus" javaType="cn.jxust.leave.po.Campus">
+            <id column="campus_id" property="id"></id>
+            <result property="campus" column="campus"></result>
+        </association>
+    </resultMap>
+    <!--管理员实现添加学生信息-->
+    <insert id="addStudent" parameterType="cn.jxust.leave.po.Student">
+        insert into student (name, gender, academy_id, campus_id, card_number,
+          phone_number , mail,  grade,password,address,building_id,dormitory,state,clazz,major_id)
+        values(
+        #{name,jdbcType=VARCHAR},
+        #{gender,jdbcType=VARCHAR},
+        #{academyId,jdbcType=INTEGER},
+        #{campusId,jdbcType=INTEGER},
+        #{cardNumber,jdbcType=VARCHAR},
+        #{phoneNumber,jdbcType=VARCHAR},
+        #{mail,jdbcType=VARCHAR},
+        #{grade,jdbcType=INTEGER},
+        "12345","江西省赣州市","3","5","1","2","2")
+    </insert>
+    <insert id="insertInfoBatch" parameterType="java.util.List">
+        insert into `student` (id,name, gender, academy_id, campus_id, card_number, password, address, phone_number, building_id, dormitory, mail, state, major_id, clazz, grade)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR},
+             #{item.gender,jdbcType=VARCHAR},#{item.academyId,jdbcType=INTEGER},
+             #{item.university,jdbcType=VARCHAR}, #{item.campusId,jdbcType=INTEGER},
+            #{item.cardNumber,jdbcType=VARCHAR}, #{item.password,jdbcType=VARCHAR},
+            #{item.address,jdbcType=VARCHAR}, #{item.phoneNumber,jdbcType=VARCHAR},
+            #{item.buildingId,jdbcType=INTEGER}, #{item.dormitory,jdbcType=VARCHAR},
+            #{item.roleId,jdbcType=INTEGER},#{item.mail,jdbcType=VARCHAR},#{item.state,jdbcType=INTEGER},
+            ,#{item.majorId,jdbcType=INTEGER},#{item.clazz,jdbcType=VARCHAR},#{item.grade,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+    <!--修改学生信息-->
+    <update id="update" parameterType="cn.jxust.leave.po.Student"  >
+        update student s
+        <set>
+            <if test="name!=null and name!='' ">
+                s.name =#{name},
+            </if>
+            <if test="gender!=null and gender!='' ">
+                s.gender =#{gender},
+            </if>
+            <if test="academyId!=null and academyId!='' ">
+                s.academy_id=#{academyId},
+            </if>
+            <if test="campusId!=null and campusId!='' ">
+                s.campus_id=#{campusId},
+            </if>
+            <if test="university!=null and university!='' ">
+                s.university=#{university},
+            </if>
+            <if test="cardNumber!=null and cardNumber!='' ">
+                s.card_number=#{cardNumber},
+            </if>
+            <if test="password!=null and password!='' ">
+                s.password=#{password},
+            </if>
+            <if test="address!=null and address!='' ">
+                s.address=#{address},
+            </if>
+            <if test="phoneNumber!=null and phoneNumber!='' ">
+                s.phone_number=#{phoneNumber},
+            </if>
+            <if test="buildingId!=null and buildingId!='' ">
+                s.building_id=#{buildingId},
+            </if>
+            <if test="dormitory!=null and dormitory!='' ">
+                s.dormitory=#{dormitory},
+            </if>
+            <if test="roleId!=null and roleId!='' ">
+                s.role_id=#{roleId},
+            </if>
+            <if test="mail!=null and mail!='' ">
+                s.mail=#{mail},
+            </if>
+            <if test="state!=null and state!='' ">
+                s.state=#{state},
+            </if>
+            <if test="majorId!=null and majorId!='' ">
+                s.major_id=#{majorId},
+            </if>
+            <if test="clazz!=null and clazz!='' ">
+                s.clazz=#{clazz},
+            </if>
+            <if test="grade!=null and grade!='' ">
+                s.grade=#{grade},
+            </if>
+        </set>
+        where s.id=#{id}
+    </update>
+
+    <!--根据一个id字符串删除学生。-->
+    <delete id="delete" parameterType="string">
+        delete from student where card_number = #{cardNumber};
+    </delete>
+
+    <select id="getStudentById" resultMap="StudentResultMap" parameterType="int">
+SELECT s.`name`,s.`gender`,r.`role`,s.`address` ,a.`academy`,s.`password`, c.`campus`,s.`university`,s.`card_number`,s.`address`,s.`phone_number`
+                ,s.`building_id`,s.`dormitory`,m.`major`,s.`mail`,s.`state`,s.`grade`,s.`password`,s.`major_id`,s.`clazz`,s.`academy_id`,s.`campus_id`
+ FROM student s
+	    INNER JOIN  role r ON s.`role_id`=r.`id`
+	    INNER JOIN academy a ON s.`academy_id` = a.`id`
+	    INNER JOIN campus c ON s.`campus_id`=c.`id`
+	    INNER JOIN major m ON s.`major_id` =m.`id`
+	    where s.id=#{id};
+    </select>
+
+    <!--登入判断用户名和密码是否正确。-->
+    <select id="login"  parameterType="map" resultType="cn.jxust.leave.po.Student">
+        select * from student
+        <where>
+            <if test="cardNumber!=null and cardNumber!=''">
+                and cardNumber=#{username} and password=#{password}
+            </if>
+        </where>
+    </select>
+
+    <!--查询学生总数-->
+    <select id="getTotal" resultType="java.lang.Long" parameterType="map" >
+        SELECT COUNT(*) FROM   student s
+        where
+            s.major_id=#{majorId}
+            and s.clazz=#{clazz}
+            and s.grade=#{grade}
+
+    </select>
+
+    <!--实现分页查询学生信息。-->
+    <select id="find"  resultMap="StudentResultMap" parameterType="map" >
+        SELECT  *  from student s
+        INNER JOIN major m ON s.`major_id` =m.`id`
+        where
+            s.major_id=#{majorId}
+            and s.clazz=#{clazz}
+            and  s.grade=#{grade}
+            limit #{start} ,#{size}
+    </select>
+    <!--根据学生的一卡通号查询学生信息。-->
+    <select id="getStudentByCardNumber" resultType="cn.jxust.leave.po.Student" parameterType="java.lang.String">
+        select * from  student
+        <where>
+            <if test="cardNumber!=null and cardNumber!=''">
+                and card_number = #{cardNumber}
+            </if>
+        </where>
+    </select>
+
+    <!--管理员根据指定的条件（校区，学院，年级，专业，一卡通号，姓名）查询学上-->
+    <select id="queryStudent" resultType="cn.jxust.leave.po.Student" parameterType="cn.jxust.leave.po.Student">
+        select * from student
+        <where>
+            <if test="campusId !=null and campusId !=''">
+                and campus_id = #{campusId}
+            </if>
+            <if test="academyId !=null and academyId != ''">
+                and academy_id = #{academyId}
+            </if>
+            <if test="grade !=null and grade != ''">
+                and grade = #{grade}
+            </if>
+            <if test="majorId !=null and majorId != ''">
+                and major_id = #{majorId}
+            </if>
+            <if test="cardNumber !=null and cardNumber !=''">
+                and card_number like '%${cardNumber}%'
+            </if>
+            <if test="name !=null and name != ''">
+                and name like '%${name}%'
+            </if>
+        </where>
+    </select>
+    <!--根据请假表中的学生id查到对应的学生信息。-->
+    <select id="getstudentByLeaveFormId"  parameterType="cn.jxust.leave.po.LeaveForm" resultType="cn.jxust.leave.po.Student">
+        select * from student s where s.id=#{studentId}
+    </select>
+    <!--学生查到自己的班长是谁-->
+    <select id="queryMonitor" parameterType="cn.jxust.leave.po.Student" resultType="cn.jxust.leave.po.Student">
+        SELECT	* FROM student s
+        <where>
+            <if test="majorId != null and majorId !''">
+                s.major_id=#{majorId}
+            </if>
+            <if test="grade !=null and grade!=''">
+                and s.grade  = #{grade}
+            </if>
+            <if test="clazz!=null and clazz!=''">
+                and s.clazz = #{clazz}
+            </if>
+            and s.role_id =2
+        </where>
+    </select>
+    <!--查询到当前学生的辅导员是谁-->
+    <select id="queryInstructor" parameterType="cn.jxust.leave.po.Student" resultType="cn.jxust.leave.po.Employee">
+        SELECT	* FROM employee	e
+         WHERE e.id= (SELECT	DISTINCT m.employee_id FROM major_employee m INNER JOIN  student s ON   m.major_id =#{majorId});
+    </select>
+    <!--查询当前学生的学院领导是谁。-->
+    <select id="queryAcademyMaster" parameterType="cn.jxust.leave.po.Student" resultType="cn.jxust.leave.po.Employee">
+        SELECT * FROM employee e
+        WHERE e.`id`= (SELECT DISTINCT employee_id FROM academy_employee a,student s WHERE a.`academy_id` = #{academyId});
+    </select>
+    <!--查询学工部-->
+    <select id="queryAffairManager"  resultType="cn.jxust.leave.po.Employee">
+        select * from employee e
+        <where>
+            <if test="roleId !=null and roleId !=''">
+                roleId = 5;
+            </if>
+        </where>
+    </select>
+    <!--查询自己校区的主管领导是谁-->
+    <select id="queryCampusManager" resultType="cn.jxust.leave.po.Employee" parameterType="cn.jxust.leave.po.Student">
+        SELECT * FROM employee e
+        WHERE e.`id`=(SELECT DISTINCT c.employee_id FROM campus_employee c INNER JOIN student s ON c.campus_id =#{campusId});
+    </select>
+    <select id="queryAllStudent" resultType="cn.jxust.leave.po.Student">
+        select * from student;
+    </select>
+    <select id="getStudentTotal" resultType="java.lang.Long">
+        select count(*) from student s
+        <where>
+            <if test="campusId !=null and campusId !=''">
+                s.campus_id = #{campusId}
+            </if>
+            <if test="academyId !=null and academyId !=''">
+                and s.academy_id = #{academyId} ;
+            </if>
+        </where>
+    </select>
+    <!--分页显示学生信息-->
+    <select id="queryMapStudent" resultType="cn.jxust.leave.po.Student" parameterType="map">
+        select  * from student s
+        <where>
+            <if test="campusId !=null and campusId !=''">
+                s.campus_id = #{campusId}
+            </if>
+            <if test="academyId !=null and academyId !=''">
+                and s.academy_id = #{academyId}
+            </if>
+        </where>
+            limit #{start} ,#{size};
+    </select>
+    <select id="getstudentBBid" resultType="cn.jxust.leave.po.Student" parameterType="integer">
+        select * from student s
+        <where>
+            s.id=#{id};
+        </where>
+    </select>
+    <select id="getTotalStudent" resultType="cn.jxust.leave.po.Student">
+        select * from student;
+    </select>
+</mapper>

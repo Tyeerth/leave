@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--create by JJ-->
+<mapper namespace="cn.jxust.leave.dao.ProcessMapper">
+
+    <!-- 预存入流程基本信息(如:请假表单id,审批人应具有的权限即approver_group_id,上一流程id,下一流程id)
+        但approver_id,is_approved,comment后面再存入
+     -->
+    <insert id="saveProcess" parameterType="cn.jxust.leave.po.Process" >
+        insert into process
+        (id,leave_form_id, approver_group_id, pre_process_id, next_process_id, state)
+        values(#{id},#{leaveFormId},#{approverGroupId},#{preProcessId},#{nextProcessId},#{state})
+    </insert>
+
+    <!-- 当符合要求的审批人审批完某一流程后,更新流程表,即存入approver_id,is_approved,comment,并且变更state-->
+    <update id="updateProcess" parameterType="cn.jxust.leave.po.Process">
+        update process set approver_id=#{approverId} ,is_approved=#{isApproved},comment=#{comment},state=#{state}
+    </update>
+
+    <delete id="deleteProcess" parameterType="string">
+        delete from process where  id like '%${leaveFormId}%'
+    </delete>
+
+    <!--班长不同意，删除剩余的请假流程表-->
+    <delete id="deleteRestProcess" parameterType="map">
+        delete from process p
+        <where>
+            <if test="leaveFormId!=null and leaveFormId!=''">
+                p.leave_form_id =#{leaveFormId}
+            </if>
+            <if test="approverGroupId !=null and approverGroupId!=''">
+                and p.approver_group_id=#{approverGroupId}
+            </if>
+        </where>
+    </delete>
+
+    <select id="queryAllProcess" resultType="cn.jxust.leave.po.Process" parameterType="map">
+        select * from process p
+        <where>
+            <if test="approverId !=null and approverId!=''">
+                approver_id = #{approveId}
+            </if>
+            <if test="state !=null and state!=''">
+                and state =#{state}
+            </if>
+        </where>
+
+    </select>
+    <!--员工查询已经审核过的流程-->
+    <select id="queryApprovedProcess" parameterType="map" resultType="cn.jxust.leave.po.Process">
+        select  * from process p
+        <where>
+            <if test="employeeId !=null and employeeId !=''">
+                p.approver_id =#{employeeId}
+            </if>
+            and p.state = -1
+            limit #{start} ,#{size};
+        </where>
+    </select>
+    <!--员工查询正在审核的流程-->
+    <select id="queryApprovingProcess" resultType="cn.jxust.leave.po.Process" parameterType="map">
+        select  * from process p
+        <where>
+            <if test="employeeId !=null and employeeId !=''">
+                p.approver_id =#{employeeId}
+            </if>
+            and p.state = 1
+            limit #{start} ,#{size};
+        </where>
+    </select>
+    <select id="queryUnapprovedProcess" resultType="cn.jxust.leave.po.Process" parameterType="map">
+        select  * from process p
+        <where>
+            <if test="employeeId !=null and employeeId !=''">
+                p.approver_id =#{employeeId}
+            </if>
+            and p.state = 0
+            limit #{start} ,#{size};
+        </where>
+    </select>
+    <!--查询请假表对应的流程-->
+    <select id="queryProcessByLeaveFormId" resultType="cn.jxust.leave.po.Process" parameterType="string">
+        SELECT * FROM PROCESS p WHERE p.leave_form_id=#{id};
+    </select>
+
+    <select id="selectStuLeaForProsForEmployee" resultType="cn.jxust.leave.po.vo.StuLeaForPros">
+        SELECT e.name,r.role,p.comment,p.pre_process_id ,p.next_process_id,p.is_approved,p.id AS process_id
+        FROM process p
+        INNER JOIN employee e ON e.id=p.approver_id
+        INNER JOIN role r ON r.id=e.role_id
+        INNER JOIN leave_form lef ON lef.id=p.leave_form_id
+        WHERE
+        p.pre_process_id !='0' AND
+        lef.student_id=#{studentId}
+    </select>
+    <select id="selectStuLeaForProsForMonitor" resultType="cn.jxust.leave.po.vo.StuLeaForPros">
+         SELECT e.name,r.role,p.comment,p.pre_process_id ,p.next_process_id,p.is_approved,p.id AS process_id
+        FROM process p
+        INNER JOIN student e ON e.id=p.approver_id
+        INNER JOIN role r ON r.id=e.role_id
+        INNER JOIN leave_form lef ON lef.id=p.leave_form_id
+        WHERE
+        p.pre_process_id = '0' AND
+        lef.student_id=#{studentId}
+    </select>
+</mapper>

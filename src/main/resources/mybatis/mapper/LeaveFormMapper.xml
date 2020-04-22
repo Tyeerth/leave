@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--create by JJ-->
+<mapper namespace="cn.jxust.leave.dao.LeaveFormMapper">
+
+    <insert id="saveLeaveForm" parameterType="cn.jxust.leave.po.LeaveForm">
+        insert into leave_form
+        (id,start_time, end_time, reason, days, submit_time, type, student_id
+
+        <if test="state!='' and state = null">
+            ,state
+        </if>
+
+        )
+        values(#{id},#{startTime},#{endTime},#{reason},#{days},now(),#{type},#{studentId}
+
+        <if test="state!='' and state=null">
+            ,#{state}
+        </if>
+
+        );
+    </insert>
+    <update id="updateLeaveForm" parameterType="cn.jxust.leave.po.LeaveForm">
+        update leave_form l
+        <set>
+            <if test="startTime!=null and startTime!='' ">
+                l.start_time =#{startTime},
+            </if>
+            <if test="endTime!=null and endTime!='' ">
+                l.end_Time =#{endTime},
+            </if>
+            <if test="reason!=null and reason!='' ">
+                l.reason=#{reason},
+            </if>
+            <if test="days!=null and days!='' ">
+                l.days=#{days},
+            </if>
+            <if test="submitTime!=null and submitTime!='' ">
+                l.submit_time=#{submitTime},
+            </if>
+            <if test="type!=null and type!='' ">
+                l.type=#{type},
+            </if>
+            <if test="studentId!=null and studentId!='' ">
+                l.student_id=#{studentId},
+            </if>
+            <if test="state!=null and state!='' ">
+                l.state=#{state},
+            </if>
+
+        </set>
+        where l.id=#{id}
+    </update>
+
+
+    <delete id="deleteLeaveForm" parameterType="java.lang.String">
+        delete from leave_form where id=#{id}
+    </delete>
+
+    <select id="getLeaveFormInfo" parameterType="java.lang.String" resultType="cn.jxust.leave.po.LeaveForm">
+        select id, start_time, end_time, reason, days, submit_time, type, student_id, state
+        from leave_form
+        where id=#{id}
+    </select>
+
+    <!--##########################create by lcs######################################-->
+
+
+    <select id="selectLeaveFormByStudentId" resultType="cn.jxust.leave.po.LeaveForm">
+        SELECT
+        le.id,le.start_time,le.end_time,le.reason,le.days,le.submit_time,le.type,le.student_id,le.state
+        FROM
+        leave_form le
+        WHERE
+        le.student_id=#{studentId}
+    </select>
+
+    <select id="selectLeaveFormListForMonitor" resultType="cn.jxust.leave.po.LeaveForm">
+        SELECT
+        le.id,le.start_time,le.end_time,le.reason,le.days,le.submit_time,le.type,le.student_id,le.state
+        FROM
+        leave_form le
+        LEFT JOIN
+        student s
+        ON
+        le.student_id=s.id
+        WHERE 1=1
+        <if test="majorId != null">
+            AND s.major_id=#{majorId}
+        </if>
+        <if test="clazz != null">
+            AND s.clazz=#{clazz}
+        </if>
+        <if test="grade != null">
+            AND s.grade=#{grade}
+        </if>
+    </select>
+
+    <select id="selectLeaveFormCountsByDays" resultType="java.lang.Integer">
+        SELECT
+        COUNT(*)
+        FROM leave_form le
+        <where>
+            <if test="timeType==1">
+                AND to_days(le.start_time) = to_days(now())
+            </if>
+            <if test="timeType==2">
+                AND date(le.start_time) = date_sub(curdate(),interval 1 day)
+            </if>
+            <if test="timeType==3">   <!--&lt; 表示小于号 ,  &gt;大于号   -->
+                AND DATE_FORMAT(le.start_time,'%Y%u') = DATE_FORMAT(CURDATE( ),'%Y%u')
+            </if>
+            <if test="timeType==4">
+                AND YEARWEEK(date_format(le.start_time,'%Y-%m-%d'),1) = YEARWEEK(now(),1)-1
+            </if>
+        </where>
+
+    </select>
+
+
+
+
+    <select id="queryLeaveFormById" parameterType="string"  resultType="cn.jxust.leave.po.LeaveForm">
+        select * from leave_form l where l.id=#{leaveFormId} ;
+    </select>
+    <select id="queryApprovedLeaveForm"  parameterType="integer" resultType="cn.jxust.leave.po.LeaveForm">
+        select * from leave_form l where l.student_id=#{Id} and l.state=1;
+    </select>
+
+    <select id="getTotal" resultType="java.lang.Long" parameterType="integer"  >
+        select count(*) from leave_form l where l.student_id=#{Id} and l.state=1;
+    </select>
+    <select id="getApprovedLeaveFormById" resultType="cn.jxust.leave.po.LeaveForm" parameterType="map">
+        select  * from leave_form l
+        where
+            l.student_id=#{id}
+            and l.state = 1
+            limit #{start} ,#{size};
+    </select>
+    <select id="getUnApprovedLeaveformById" resultType="cn.jxust.leave.po.LeaveForm" parameterType="map">
+        select  * from leave_form l
+        where
+            l.student_id=#{id}
+            and l.state = -1
+            limit #{start} ,#{size};
+    </select>
+    <select id="getUnTotal" resultType="java.lang.Long" parameterType="integer">
+         select count(*) from leave_form l where l.student_id=#{Id} and l.state=-1;
+    </select>
+    <select id="getAllLeaveForm" resultType="cn.jxust.leave.po.LeaveForm" parameterType="map">
+        select  * from leave_form l
+        where
+            l.student_id=#{id}
+            limit #{start} ,#{size};
+    </select>
+    <select id="getAllTotal" resultType="java.lang.Long" parameterType="integer">
+         select count(*) from leave_form l where l.student_id=#{Id} ;
+    </select>
+    <select id="getApprovingLeaveForm" resultType="cn.jxust.leave.po.LeaveForm" parameterType="map">
+           select  * from leave_form l
+        where
+            l.student_id=#{id}
+            and l.state = 0
+            limit #{start} ,#{size};
+    </select>
+    <select id="getApprovingTotal" resultType="java.lang.Long" parameterType="integer">
+        select count(*) from leave_form l where l.student_id=#{Id} and l.state=0;
+    </select>
+    <select id="getApprovingLeaveFormById" resultType="cn.jxust.leave.po.LeaveForm" parameterType="map">
+         select  * from leave_form l
+        where
+            l.student_id=#{id}
+            and l.state = 0
+
+    </select>
+
+    <select id="selectWeekLeaveFormCountsByDays" resultType="java.lang.Integer">
+        SELECT
+        COUNT(*)
+        FROM leave_form le
+        <where>
+            <if test="timeType==1">
+                AND to_days(le.start_time) = to_days(now())
+            </if>
+            <if test="timeType==2">
+                AND date(le.start_time) = date_sub(curdate(),interval 1 day)
+            </if>
+            <if test="timeType==3">   <!--&lt; 表示小于号 ,  &gt;大于号   -->
+                AND date(le.start_time) = date_sub(curdate(),interval 2 day)
+            </if>
+            <if test="timeType==4">
+                AND date(le.start_time) = date_sub(curdate(),interval 3 day)
+            </if>
+            <if test="timeType==5">
+                AND date(le.start_time) = date_sub(curdate(),interval 4 day)
+            </if>
+            <if test="timeType==6">   <!--&lt; 表示小于号 ,  &gt;大于号   -->
+                AND date(le.start_time) = date_sub(curdate(),interval 5 day)
+            </if>
+            <if test="timeType==7">
+                AND date(le.start_time) = date_sub(curdate(),interval 6 day)
+            </if>
+
+        </where>
+
+
+
+    </select>
+
+
+</mapper>

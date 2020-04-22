@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.jxust.leave.dao.EmployeeMapper">
+    <resultMap id="EmployeeMap" type="cn.jxust.leave.po.Employee">
+        <id property="id" column="id"></id>
+        <result property="name" column="name"></result>
+        <result property="gender" column="gender"></result>
+        <result property="phoneNumber" column="phone_Number"></result>
+        <result property="username" column="username"></result>
+        <result property="password" column="password"></result>
+        <association property="role" javaType="cn.jxust.leave.po.Role">
+            <id property="id" column="role_id"></id>
+            <result property="role" column="role"></result>
+        </association>
+    </resultMap>
+    <insert id="insertOne" parameterType="cn.jxust.leave.po.Employee">
+        insert into employee (name, gender, role_id, phone_number, username, password)
+        values (#{name,jdbcType=VARCHAR},#{gender,jdbcType=VARCHAR},#{roleId,jdbcType=INTEGER},#{phoneNumber,jdbcType=VARCHAR},#{username,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR})
+    </insert>
+    <!--管理员根据员工id删除对应的员工，并删除中间表。-->
+    <delete id="deleteEmployeeById" parameterType="string">
+        delete from employee
+        where id= #{id}
+    </delete>
+    <delete id="delteMidle_form" parameterType="string">
+         delete  e,z,g,a,p
+        from
+        major_employee as e
+        left join clazz_employee as z on e.employee_id = z.employee_id
+        left join grade_employee as g on e.employee_id = g.employee_id
+        left join academy_employee as a on e.employee_id = a.employee_id
+        left join campus_employee as p on e.employee_id = p.employee_id
+        where e.employee_id= #{id}
+    </delete>
+
+
+    <select id="selectOneById" parameterType="int" resultMap="EmployeeMap">
+    SELECT * FROM employee e
+     INNER JOIN role r ON e.role_id = r.`id`
+         where e.id=#{id}
+    </select>
+
+    <select id="selectOneByUsername" resultType="cn.jxust.leave.po.Employee">
+        select * from employee
+        <where>
+            <if test="username!=null and username!=''">
+                and  username = #{username}
+            </if>
+        </where>
+    </select>
+
+    <!--管理员根据教职工担任的角色、姓名、性别、手机号码查询对应的员工-->
+    <select id="queryEmployee" resultType="cn.jxust.leave.po.Employee" parameterType="cn.jxust.leave.po.Employee">
+        select  * from employee e
+        <where>
+            <if test="roleId != null and roleId != ''">
+                and e.role_id = #{roleId}
+            </if>
+            <if test="name !=null and name !=''">
+                and e.name like '%${name}%'
+            </if>
+            <if test="gender !=null and gender !=''">
+                and e.gender = #{gender}
+            </if>
+            <if test="phoneNumber !=null and phoneNumber !=''">
+                and e.phone_number like '%{phoneNumber}%'
+            </if>
+        </where>
+    </select>
+    <select id="getEmpLeaFromClazz" resultType="cn.jxust.leave.po.vo.EmpLeaFrom">
+        select m.major,s.clazz,s.grade ,count(*) as clazzPeopleCount  from student s
+        INNER JOIN major m ON s.major_id=m.id group by m.major,s.clazz,s.grade having count(*)>1
+        limit #{offset},#{limit}
+
+    </select>
+    <select id="selectLeaveFormCountsByDays" resultType="java.lang.Integer" parameterType="cn.jxust.leave.po.vo.EmpLeaFrom">
+        SELECT
+        COUNT(*)
+        FROM leave_form le
+        INNER JOIN student s ON s.id=le.student_id and s.grade=#{e.grade} and s.clazz=#{e.clazz}
+        INNER JOIN major m ON s.major_id=m.id and #{e.major}=m.major
+        <where>
+            <if test="timeType==1">
+                AND to_days(le.start_time) = to_days(now())
+            </if>
+            <if test="timeType==2">
+                AND date(le.start_time) = date_sub(curdate(),interval 1 day)
+            </if>
+            <if test="timeType==3">   <!--&lt; 表示小于号 ,  &gt;大于号   -->
+                AND DATE_FORMAT(le.start_time,'%Y%u') = DATE_FORMAT(CURDATE( ),'%Y%u')
+            </if>
+        </where>
+    </select>
+    <select id="getClasssInfoCount" resultType="java.lang.Integer">
+         select count(*) from (select s.major_id,s.clazz,s.grade from student s
+         group by s.major_id,s.clazz,s.grade having count(*)>1) m
+    </select>
+    <select id="getAcademyList" resultType="cn.jxust.leave.po.Academy">
+        select a.id,a.academy from academy a;
+
+    </select>
+    <select id="getEmpLeaFromClazzLimt" resultType="cn.jxust.leave.po.vo.EmpLeaFrom">
+         select m.major,s.clazz,s.grade ,count(*) as clazzPeopleCount  from student s
+        INNER JOIN major m ON s.major_id=m.id <where>
+        <if test="campus_id != '' and campus_id != null " > AND s.campus_id=#{campus_id} </if>
+        <if test="academy_id != '' and academy_id != null"> AND s.academy_id=#{academy_id}</if> </where>
+        group by m.major,s.clazz,s.grade having count(*)>1
+
+    </select>
+    <select id="getCountEmployee" resultType="java.lang.Integer" parameterType="map">
+        select  count(*) from employee e
+        <where>
+            <if test="roleId != null and roleId != ''">
+                and e.role_id = #{roleId}
+            </if>
+            <if test="name !=null and name !=''">
+                and e.name like '%${name}%'
+            </if>
+            <if test="gender !=null and gender !=''">
+                and e.gender = #{gender}
+            </if>
+            <if test="phoneNumber !=null and phoneNumber !=''">
+                and e.phone_number like '%${phoneNumber}%'
+            </if>
+        </where>
+        limit #{start} ,#{size};
+    </select>
+    <select id="getMapEmployee" resultType="cn.jxust.leave.po.Employee" parameterType="map">
+        select  * from employee e
+        <where>
+            <if test="roleId != null and roleId != ''">
+                and e.role_id = #{roleId}
+            </if>
+            <if test="name !=null and name !=''">
+                and e.name like '%${name}%'
+            </if>
+            <if test="gender !=null and gender !=''">
+                and e.gender = #{gender}
+            </if>
+            <if test="phoneNumber !=null and phoneNumber !=''">
+                and e.phone_number like '%${phoneNumber}%'
+            </if>
+        </where>
+        limit #{start} ,#{size};
+    </select>
+    <select id="getEmployeeById" resultType="cn.jxust.leave.po.Employee">
+        select  * from employee  e
+        <where>
+            e.id=#{id};
+        </where>
+    </select>
+
+
+    <update id="updateOneByIdIfNecessary"  parameterType="cn.jxust.leave.po.Employee">
+        update
+        employee
+        <set>
+           <!--由于在EmployeeMapper中设置了@Param("e"),所以这里的e为Employee的别名-->
+            <if test="e.name != null">name=#{e.name},</if>
+            <if test="e.gender != null">gender=#{e.gender},</if>
+            <if test="e.roleId != null">role_id=#{e.roleId},</if>
+            <if test="e.phoneNumber != null">phone_number=#{e.phoneNumber},</if>
+            <if test="e.username != null">username=#{e.username},</if>
+            <if test="e.password != null">password=#{e.password}</if>
+        </set>
+        where id=#{id}
+    </update>
+    <update id="updateOne" parameterType="cn.jxust.leave.po.Employee">
+        <!--修改员工信息-->
+            update employee e
+            <set>
+                <if test="name!=null and name!='' ">
+                    e.name =#{name},
+                </if>
+                <if test="gender!=null and gender!='' ">
+                    e.gender =#{gender},
+                </if>
+
+                <if test="password!=null and password!='' ">
+                    e.password=#{password},
+                </if>
+
+                <if test="phoneNumber!=null and phoneNumber!='' ">
+                    e.phone_number=#{phoneNumber},
+                </if>
+
+                <if test="roleId!=null and roleId!='' ">
+                    e.role_id=#{roleId},
+                </if>
+                <if test="username!=null and username!=''">
+                    e.username=#{username},
+                </if>
+            </set>
+            where e.id=#{id}
+    </update>
+
+</mapper>
