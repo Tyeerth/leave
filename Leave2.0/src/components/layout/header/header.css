@@ -1,0 +1,9 @@
+.app-name {
+  float: left;
+  color:white;
+  text-align: center;
+  font-size:14px;
+}
+.app-nav{
+    float: right;
+}
