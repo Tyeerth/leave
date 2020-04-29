@@ -6,4 +6,5 @@ package cn.jxust.leave.controller;
  */
 public class TestGit {
     String Hello = "hello";
+    String test = "test";
 }
