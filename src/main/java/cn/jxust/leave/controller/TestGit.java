@@ -2,9 +2,8 @@ package cn.jxust.leave.controller;
 
 /**
  * @author tyeerth
- * @date 2020/4/22 - 15:52
+ * @date 2020/5/1 - 12:46
  */
 public class TestGit {
-    String Hello = "hello";
-    String test = "test";
+    private String test = "1";
 }
