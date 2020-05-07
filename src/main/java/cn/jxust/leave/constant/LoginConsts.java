@@ -16,4 +16,7 @@ public class LoginConsts {
 
     //教职工登入后存在session中名为employee中的key中
     public  static  final  String  employee = "employee";
+
+    //异常名
+    public  static final String ATTR_NAME_EXCEPTION = "exception";
 }

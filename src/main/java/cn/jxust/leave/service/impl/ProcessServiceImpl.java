@@ -2,16 +2,13 @@ package cn.jxust.leave.service.impl;
 
 import cn.jxust.leave.constant.LoginConsts;
 import cn.jxust.leave.dao.ProcessMapper;
-import cn.jxust.leave.po.Employee;
-import cn.jxust.leave.po.Process;
-import cn.jxust.leave.po.vo.StuLeaForPros;
+import cn.jxust.leave.pojo.Employee;
+import cn.jxust.leave.pojo.Process;
 import cn.jxust.leave.service.ProcessService;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.security.auth.Subject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,29 +38,34 @@ public class ProcessServiceImpl implements ProcessService {
         processMapper.deleteProcess(leaveFormId);
     }
 
+    @Override
+    public List<Process> queryAllProcess() {
+        return null;
+    }
+
     /**
      * 查询需要当前用户审批的请假流程
      * 注意：这里使用了shiro安全框架中在服务层中获取到session。
      * @return
      */
-    @Override
-    public List<Process> queryAllProcess() {
-        Subject currentUser = SecurityUtils.getSubject();
-        Session currentUserSession = currentUser.getSession();
-        Map<String,Object> map = new HashMap<>();
-        //先判断出当前登入用户的roleid。
-        Employee employee = (Employee)currentUserSession.getAttribute(LoginConsts.employee);
-        Integer roleId = employee.getRoleId();
-        //获取当前员工的id。
-        Integer employeeId = employee.getId();
-        int processState =1;
-        map.put("approveId",employeeId);
-        map.put("processState",processState);
-        //查询所有未审核的请假流程表、请假流程表中approver_group_id是否为当前登入用户的roleid、
-        // 请假流程表中的approver_id是否为当前用户的id，请假流程表中的状态为1（已激活）
-
-        return processMapper.queryAllProcess(map);
-    }
+//    @Override
+//    public List<Process> queryAllProcess() {
+//        Subject currentUser = SecurityUtils.getSubject();
+//        Session currentUserSession = currentUser.getSession();
+//        Map<String,Object> map = new HashMap<>();
+//        //先判断出当前登入用户的roleid。
+//        Employee employee = (Employee)currentUserSession.getAttribute(LoginConsts.employee);
+//        Integer roleId = employee.getRoleId();
+//        //获取当前员工的id。
+//        Integer employeeId = employee.getId();
+//        int processState =1;
+//        map.put("approveId",employeeId);
+//        map.put("processState",processState);
+//        //查询所有未审核的请假流程表、请假流程表中approver_group_id是否为当前登入用户的roleid、
+//        // 请假流程表中的approver_id是否为当前用户的id，请假流程表中的状态为1（已激活）
+//
+//        return processMapper.queryAllProcess(map);
+//    }
 
     /**
      * 员工查询已经审核通过的请假流程。
@@ -117,10 +119,10 @@ public class ProcessServiceImpl implements ProcessService {
         processMapper.deleteRestProcess(map);
     }
 
-    @Override
-    public List<StuLeaForPros> queryStudentProcessesListByStudentId(int studentId){
-        List<StuLeaForPros> stuLeaForProsList = processMapper.selectStuLeaForProsForEmployee(studentId);
-        stuLeaForProsList.add(processMapper.selectStuLeaForProsForMonitor(studentId));
-        return stuLeaForProsList;
-    }
+//    @Override
+//    public List<StuLeaForPros> queryStudentProcessesListByStudentId(int studentId){
+//        List<StuLeaForPros> stuLeaForProsList = processMapper.selectStuLeaForProsForEmployee(studentId);
+//        stuLeaForProsList.add(processMapper.selectStuLeaForProsForMonitor(studentId));
+//        return stuLeaForProsList;
+//    }
 }

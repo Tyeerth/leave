@@ -1,16 +1,19 @@
 package cn.jxust.leave.dao;
 
-import cn.jxust.leave.po.Employee;
-import cn.jxust.leave.po.LeaveForm;
-import cn.jxust.leave.po.Student;
-import org.apache.ibatis.annotations.Param;
+import cn.jxust.leave.pojo.Employee;
+import cn.jxust.leave.pojo.LeaveForm;
+import cn.jxust.leave.pojo.Student;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Administrator
+ */
 @Repository
-public interface StudentMapper  {
+public interface StudentMapper  extends BaseMapper<Student> {
     /**
      * 根据学生id查询学生。
      * @param id
@@ -50,13 +53,6 @@ public interface StudentMapper  {
      * @param student
      */
     void update(Student student);
-
-    /**
-     * 根据学生的一卡通号查询到相应的学生。
-     * @param cardNumber
-     * @return
-     */
-    Student getStudentByCardNumber(@Param(value = "cardNumber") String cardNumber);
 
     /**
      * 管理员实现添加学生

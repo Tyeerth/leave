@@ -1,7 +1,6 @@
 package cn.jxust.leave.dao;
 
-import cn.jxust.leave.po.vo.StuLeaForPros;
-import cn.jxust.leave.po.Process;
+import cn.jxust.leave.pojo.Process;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -64,7 +63,7 @@ public interface ProcessMapper {
      */
     void deleteRestProcess(Map<String, Object> map);
 
-    List<StuLeaForPros> selectStuLeaForProsForEmployee(int studentId);
-
-    StuLeaForPros selectStuLeaForProsForMonitor(int studentId);
+//    List<StuLeaForPros> selectStuLeaForProsForEmployee(int studentId);
+//
+//    StuLeaForPros selectStuLeaForProsForMonitor(int studentId);
 }

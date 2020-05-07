@@ -1,8 +1,6 @@
 package cn.jxust.leave.service;
 
-import cn.jxust.leave.po.Academy;
-import cn.jxust.leave.po.Employee;
-import cn.jxust.leave.po.vo.EmpLeaFrom;
+import cn.jxust.leave.pojo.Employee;
 
 import java.util.List;
 import java.util.Map;
@@ -70,12 +68,9 @@ public interface EmployeeService {
      */
     void deleteMidle_employee(String s);
 
-    List<EmpLeaFrom> getClasssInfoList(int offset, int limit);
-    List<EmpLeaFrom> getClasssInfoListLimt(Integer campus_id, Integer academy_id);
 
     int getClasssInfoCount();
 
-    List<Academy> getAcademyList();
 
     int getCountEmployee(Map<String, Object> map);
 

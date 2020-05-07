@@ -1,6 +1,6 @@
 package cn.jxust.leave.dao;
 
-import cn.jxust.leave.po.LeaveForm;
+import cn.jxust.leave.pojo.LeaveForm;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;

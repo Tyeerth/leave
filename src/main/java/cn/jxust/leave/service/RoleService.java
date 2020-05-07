@@ -1,6 +1,6 @@
 package cn.jxust.leave.service;
 
-import cn.jxust.leave.po.LeaveForm;
+import cn.jxust.leave.pojo.LeaveForm;
 
 import java.util.List;
 

@@ -1,11 +1,10 @@
 package cn.jxust.leave.service.impl;
 
 import cn.jxust.leave.dao.StudentMapper;
-import cn.jxust.leave.po.Academy;
-import cn.jxust.leave.po.Campus;
-import cn.jxust.leave.po.Student;
+import cn.jxust.leave.pojo.Student;
 import cn.jxust.leave.service.StudentService;
 import cn.jxust.leave.utils.ResultEntity;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,9 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public Student getStudentById(Integer id) {
-        return studentMapper.getStudentById(id);
+        QueryWrapper<Student> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",id);
+        return studentMapper.selectOne(queryWrapper);
     }
 
     /**
@@ -89,7 +90,9 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public Student getStudentByCardNumber(String cardNumber){
-       return studentMapper.getStudentByCardNumber(cardNumber);
+        QueryWrapper<Student> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("card_Number",cardNumber);
+       return studentMapper.selectOne(queryWrapper);
     }
 
     /**
@@ -124,44 +127,49 @@ public class StudentServiceImpl implements StudentService {
         return studentMapper.getStudentTotal(map);
     }
 
-    /**
-     * 查到学生
-     * @param map
-     * @return
-     */
     @Override
     public List<Student> queryMapStudent(Map<String, Object> map) {
-        List<Student> studentList = studentMapper.queryMapStudent(map);
-        for (Student student : studentList){
-            Academy academy = new Academy();
-            Campus campus = new Campus();
-            switch (student.getAcademyId()){
-                case  1: academy.setAcademy("信息学院");break;
-                case  2: academy.setAcademy("文法学院");break;
-                case  3: academy.setAcademy("建测学院");break;
-                case  4: academy.setAcademy("理学院");break;
-                case  5: academy.setAcademy("外语外贸学院");break;
-                case  6: academy.setAcademy("机电学院");break;
-                case  7: academy.setAcademy("材料冶金化学学部");break;
-                case  8: academy.setAcademy("商学院");break;
-                case  9: academy.setAcademy("资源与环境工程学院");break;
-                case  10: academy.setAcademy("马克思主义学院");break;
-                case  11: academy.setAcademy("能源与机械工程学院");break;
-                case  12: academy.setAcademy("电气工程学院");break;
-                case  13: academy.setAcademy("软件工程学院");break;
-                case  14: academy.setAcademy("经济管理学院");break;
-            }
-            switch (student.getCampusId()){
-                case 1 :campus.setCampus("红旗校区");break;
-                case 2 :campus.setCampus("黄金校区");break;
-                case 3 :campus.setCampus("南昌校区");break;
-                case 4 :campus.setCampus("西校区");break;
-            }
-            student.setCampus(campus);
-            student.setAcademy(academy);
-        }
-        return studentList;
+        return null;
     }
+
+    /**
+     * 查到学生
+//     * @param map
+     * @return
+     */
+//    @Override
+//    public List<Student> queryMapStudent(Map<String, Object> map) {
+//        List<Student> studentList = studentMapper.queryMapStudent(map);
+//        for (Student student : studentList){
+//            Academy academy = new Academy();
+//            Campus campus = new Campus();
+//            switch (student.getAcademyId()){
+//                case  1: academy.setAcademy("信息学院");break;
+//                case  2: academy.setAcademy("文法学院");break;
+//                case  3: academy.setAcademy("建测学院");break;
+//                case  4: academy.setAcademy("理学院");break;
+//                case  5: academy.setAcademy("外语外贸学院");break;
+//                case  6: academy.setAcademy("机电学院");break;
+//                case  7: academy.setAcademy("材料冶金化学学部");break;
+//                case  8: academy.setAcademy("商学院");break;
+//                case  9: academy.setAcademy("资源与环境工程学院");break;
+//                case  10: academy.setAcademy("马克思主义学院");break;
+//                case  11: academy.setAcademy("能源与机械工程学院");break;
+//                case  12: academy.setAcademy("电气工程学院");break;
+//                case  13: academy.setAcademy("软件工程学院");break;
+//                case  14: academy.setAcademy("经济管理学院");break;
+//            }
+//            switch (student.getCampusId()){
+//                case 1 :campus.setCampus("红旗校区");break;
+//                case 2 :campus.setCampus("黄金校区");break;
+//                case 3 :campus.setCampus("南昌校区");break;
+//                case 4 :campus.setCampus("西校区");break;
+//            }
+//            student.setCampus(campus);
+//            student.setAcademy(academy);
+//        }
+//        return studentList;
+//    }
 
     @Override
     public Student getstudentBId(Integer id) {
@@ -177,7 +185,7 @@ public class StudentServiceImpl implements StudentService {
 
     public PageInfo<Student> getTotalStudent(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Student> list = studentMapper.getTotalStudent();
+        List<Student> list = studentMapper.selectList(null);
         //封装到PageInfo对象中
         return new PageInfo<>(list);
     }

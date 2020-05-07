@@ -1,8 +1,8 @@
 package cn.jxust.leave.service.impl;
 
 import cn.jxust.leave.dao.RoleMapper;
-import cn.jxust.leave.po.Employee;
-import cn.jxust.leave.po.LeaveForm;
+import cn.jxust.leave.pojo.Employee;
+import cn.jxust.leave.pojo.LeaveForm;
 import cn.jxust.leave.service.EmployeeService;
 import cn.jxust.leave.service.LeaveFormService;
 import cn.jxust.leave.service.RoleService;

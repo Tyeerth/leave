@@ -1,6 +1,5 @@
 package cn.jxust.leave.utils;
 
-import cn.jxust.leave.po.ExcelBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;

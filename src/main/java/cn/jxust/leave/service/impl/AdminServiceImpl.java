@@ -2,10 +2,11 @@ package cn.jxust.leave.service.impl;
 
 import cn.jxust.leave.dao.AdminMapper;
 import cn.jxust.leave.dao.StudentMapper;
-import cn.jxust.leave.po.Employee;
-import cn.jxust.leave.po.Student;
+import cn.jxust.leave.pojo.Employee;
+import cn.jxust.leave.pojo.Student;
 import cn.jxust.leave.service.AdminService;
 import cn.jxust.leave.utils.ExcelUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,16 +32,20 @@ public class AdminServiceImpl implements AdminService {
      * 修改管理员信息。
      * @param admin
      */
-    public void update(Employee admin) {
-        adminMapper.updateAdmin(admin);
+    @Override
+    public int  update(Employee admin) {
+       return adminMapper.updateById(admin);
     }
 
     /**
      * 实现管理员登入功能
      * @param username
      */
+    @Override
     public Employee getAdminByUsername(String username) {
-        return adminMapper.getAdminByUserName(username);
+        QueryWrapper<Employee> employeeQueryWrapper = new QueryWrapper<>();
+        employeeQueryWrapper.eq("username",username).eq("role_id",8);
+        return adminMapper.selectOne(employeeQueryWrapper);
     }
 
     /**
@@ -49,6 +54,7 @@ public class AdminServiceImpl implements AdminService {
      * @param file
      * @throws Exception
      */
+    @Override
     public void importExcelInfo(InputStream in, MultipartFile file) throws Exception {
         List<List<Object>> listob = ExcelUtil.getBankListByExcel(in,file.getOriginalFilename());
         List<Student> studentList = new ArrayList<Student>();
@@ -85,14 +91,14 @@ public class AdminServiceImpl implements AdminService {
                 case "软件工程学院": academy_id = 13;break;
                 case "经济管理学院": academy_id = 14;break;
             }
-                  student.setAcademyId(academy_id);
+//                  student.setAcademyId(academy_id);
                 switch (String.valueOf(ob.get(4))){
                     case "红旗校区" : campus_id = 1;break;
                     case "黄金校区" : campus_id = 2;break;
                     case "南昌校区" : campus_id = 3;break;
                     case "西校区"   : campus_id = 4;break;
                 }
-                student.setCampusId(campus_id);
+//                student.setCampusId(campus_id);
                 student.setUniversity(String.valueOf(ob.get(5)));
                 student.setCardNumber(String.valueOf(ob.get(6)));
                 student.setPassword(String.valueOf(ob.get(7)));
@@ -110,7 +116,7 @@ public class AdminServiceImpl implements AdminService {
                     case "辅导员" : role_id = 7; break;
                     case "管理员" : role_id = 8; break;
                 }
-                student.setRoleId(role_id);
+//                student.setRoleId(role_id);
                 student.setMail(String.valueOf(ob.get(13)));
                 student.setState(String.valueOf(ob.get(14)));
                 switch (String.valueOf(ob.get(15))){
@@ -122,7 +128,7 @@ public class AdminServiceImpl implements AdminService {
                     case "机械制造" : major_id = 6;break;
                     case "工商管理" : major_id = 7;break;
                 }
-                student.setMajorId(major_id);
+//                student.setMajorId(major_id);
                 student.setClazz(String.valueOf(ob.get(16)));
                 student.setGrade(Integer.parseInt(String.valueOf(ob.get(17))));
                 studentMapper.addStudent(student);

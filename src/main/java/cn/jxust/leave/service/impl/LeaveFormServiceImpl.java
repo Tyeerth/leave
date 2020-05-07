@@ -2,14 +2,17 @@ package cn.jxust.leave.service.impl;
 
 import cn.jxust.leave.dao.LeaveFormMapper;
 import cn.jxust.leave.dao.StudentMapper;
-import cn.jxust.leave.po.Employee;
-import cn.jxust.leave.po.LeaveForm;
-import cn.jxust.leave.po.Process;
-import cn.jxust.leave.po.Student;
+import cn.jxust.leave.pojo.Employee;
+import cn.jxust.leave.pojo.LeaveForm;
+import cn.jxust.leave.pojo.Process;
+import cn.jxust.leave.pojo.Student;
 import cn.jxust.leave.service.LeaveFormService;
 import cn.jxust.leave.service.ProcessService;
 import cn.jxust.leave.service.StudentService;
 import cn.jxust.leave.utils.TimeUtils;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -220,26 +223,31 @@ public class LeaveFormServiceImpl implements LeaveFormService {
          return leaveFormMapper.selectLeaveFormByStudentId(studentId);
      }
 
+    @Override
+    public List<LeaveForm> studentGetLeaveFormByCardNumber(String cardNumber) {
+        return null;
+    }
+
     /**
      * @Description  传入student的cardNumber值,即可查询自己的请假信息
      *                而班长的可以查询,全班所有人的
      * @param cardNumber 一卡通号
      **/
-    @Override
-    public List<LeaveForm> studentGetLeaveFormByCardNumber(String  cardNumber){
-        Student student=studentService.getStudentByCardNumber(cardNumber);
-        if(student!=null){
-            if(student.getRoleId()==2){    //1对应普通学生,2对应班长
-                return  leaveFormMapper.selectLeaveFormListForMonitor(student.getMajorId(),student.getClazz(),student.getGrade());
-            }else{
-                List<LeaveForm> leaveForms=new ArrayList<>();
-                leaveForms.add(leaveFormMapper.selectLeaveFormByStudentId(student.getId()));
-                return leaveForms;
-            }
-
-        }
-        return null;
-    }
+//    @Override
+//    public List<LeaveForm> studentGetLeaveFormByCardNumber(String  cardNumber){
+//        Student student=studentService.getStudentByCardNumber(cardNumber);
+//        if(student!=null){
+//            if(student.getRoleId()==2){    //1对应普通学生,2对应班长
+//                return  leaveFormMapper.selectLeaveFormListForMonitor(student.getMajorId(),student.getClazz(),student.getGrade());
+//            }else{
+//                List<LeaveForm> leaveForms=new ArrayList<>();
+//                leaveForms.add(leaveFormMapper.selectLeaveFormByStudentId(student.getId()));
+//                return leaveForms;
+//            }
+//
+//        }
+//        return null;
+//    }
 
 
     /**
@@ -331,7 +339,10 @@ public class LeaveFormServiceImpl implements LeaveFormService {
 
     @Override
     public List<LeaveForm> getApprovingLeaveFormById(Map<String, Object> map) {
-        return leaveFormMapper.getApprovingLeaveForm(map);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("student_id",map.get("id"));
+        queryWrapper.eq("state",0);
+        return leaveFormMapper.selectList(queryWrapper);
     }
 
     @Override
@@ -341,7 +352,10 @@ public class LeaveFormServiceImpl implements LeaveFormService {
 
     @Override
     public List<LeaveForm> getApprovingLeaveForm(Map<String, Object> map) {
-        return leaveFormMapper.getApprovingLeaveFormById(map);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("student_id",map.get("id"));
+        queryWrapper.eq("state",0);
+        return leaveFormMapper.selectList(queryWrapper);
     }
 
     /**
@@ -350,7 +364,7 @@ public class LeaveFormServiceImpl implements LeaveFormService {
      */
     @Override
     public void updateLeaveForm(LeaveForm leaveForm1) {
-        leaveFormMapper.updateLeaveForm(leaveForm1);
+        leaveFormMapper.updateById(leaveForm1);
     }
 
     @Override
@@ -361,4 +375,53 @@ public class LeaveFormServiceImpl implements LeaveFormService {
         }
         return days;
     }
+
+    /**
+     * 获取当前用户需要注销的请假条
+     * @param id
+     */
+    @Override
+    public PageInfo<LeaveForm> getCancelLeaveForm(Integer id,Integer pageNum,Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("state",1);
+        queryWrapper.eq("student_id",id);
+        List<LeaveForm> list = leaveFormMapper.selectList(queryWrapper);
+        //封装到PageInfo对象中
+        return new PageInfo<>(list);
+    }
+
+    @Override
+    public PageInfo<LeaveForm> getUnApprovedLeaveForm(Integer id,Integer pageNum,Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("state",-1);
+        queryWrapper.eq("student_id",id);
+        List<LeaveForm> list = leaveFormMapper.selectList(queryWrapper);
+        //封装到PageInfo对象中
+        return new PageInfo<>(list);
+    }
+
+    @Override
+    public PageInfo<LeaveForm> getStudentApprovingLeaveForm(Integer id, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("state",0);
+        queryWrapper.eq("student_id",id);
+        List<LeaveForm> list = leaveFormMapper.selectList(queryWrapper);
+        //封装到PageInfo对象中
+        return new PageInfo<>(list);
+    }
+
+    @Override
+    public PageInfo<LeaveForm> getApprovedLeaveForm(Integer id, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("state",1);
+        queryWrapper.eq("student_id",id);
+        List<LeaveForm> list = leaveFormMapper.selectList(queryWrapper);
+        //封装到PageInfo对象中
+        return new PageInfo<>(list);
+    }
+
 }

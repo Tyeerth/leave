@@ -1,6 +1,6 @@
 package cn.jxust.leave.service;
 
-import cn.jxust.leave.po.Employee;
+import cn.jxust.leave.pojo.Employee;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
@@ -15,7 +15,7 @@ public interface AdminService {
      * 修改管理员信息。
      * @param admin
      */
-    void update(Employee admin);
+    int update(Employee admin);
 
     /**
      * 实现管理员登入

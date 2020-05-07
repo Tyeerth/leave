@@ -1,6 +1,6 @@
 package cn.jxust.leave.service;
 
-import cn.jxust.leave.po.Student;
+import cn.jxust.leave.pojo.Student;
 import cn.jxust.leave.utils.ResultEntity;
 import com.github.pagehelper.PageInfo;
 

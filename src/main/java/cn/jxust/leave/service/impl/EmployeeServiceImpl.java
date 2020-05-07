@@ -1,9 +1,7 @@
 package cn.jxust.leave.service.impl;
 
 import cn.jxust.leave.dao.EmployeeMapper;
-import cn.jxust.leave.po.Academy;
-import cn.jxust.leave.po.Employee;
-import cn.jxust.leave.po.vo.EmpLeaFrom;
+import cn.jxust.leave.pojo.Employee;
 import cn.jxust.leave.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +43,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param username
      * @return
      */
+    @Override
     public Employee getEmployeeByUsername(String username) {
         return employeeMapper.selectOneByUsername(username);
     }
@@ -64,6 +63,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param employee
      * @return
      */
+    @Override
     public List<Employee> queryEmployee(Employee employee) {
         return employeeMapper.queryEmployee(employee);
     }
@@ -80,6 +80,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 删除员工时删除中间表
      * @param s
      */
+    @Override
     public void deleteMidle_employee(String s) {
         employeeMapper.delteMidle_form(s);
     }
@@ -93,39 +94,39 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.countOnes();
     }
 
-    @Override
-    public List<EmpLeaFrom> getClasssInfoList(int offset,int limit){
-        List<EmpLeaFrom> empLeaFromList= employeeMapper.getEmpLeaFromClazz(offset,limit);
-
-        for(EmpLeaFrom empLeaFrom:empLeaFromList) {
-            empLeaFrom.setTodayPeopleCount(employeeMapper.selectLeaveFormCountsByDays(1, empLeaFrom));
-            empLeaFrom.setYesterdayPeopleCount(employeeMapper.selectLeaveFormCountsByDays(2, empLeaFrom));
-            empLeaFrom.setThisWeekPeopleCount(employeeMapper.selectLeaveFormCountsByDays(3, empLeaFrom));
-        }
-
-        return empLeaFromList;
-    }
-    @Override
-    public List<EmpLeaFrom> getClasssInfoListLimt(Integer campus_id,Integer academy_id){
-        List<EmpLeaFrom> empLeaFromList= employeeMapper.getEmpLeaFromClazzLimt(campus_id,academy_id);
-
-        for(EmpLeaFrom empLeaFrom:empLeaFromList) {
-            empLeaFrom.setTodayPeopleCount(employeeMapper.selectLeaveFormCountsByDays(1, empLeaFrom));
-            empLeaFrom.setYesterdayPeopleCount(employeeMapper.selectLeaveFormCountsByDays(2, empLeaFrom));
-            empLeaFrom.setThisWeekPeopleCount(employeeMapper.selectLeaveFormCountsByDays(3, empLeaFrom));
-        }
-
-        return empLeaFromList;
-    }
+//    @Override
+//    public List<EmpLeaFrom> getClasssInfoList(int offset,int limit){
+//        List<EmpLeaFrom> empLeaFromList= employeeMapper.getEmpLeaFromClazz(offset,limit);
+//
+//        for(EmpLeaFrom empLeaFrom:empLeaFromList) {
+//            empLeaFrom.setTodayPeopleCount(employeeMapper.selectLeaveFormCountsByDays(1, empLeaFrom));
+//            empLeaFrom.setYesterdayPeopleCount(employeeMapper.selectLeaveFormCountsByDays(2, empLeaFrom));
+//            empLeaFrom.setThisWeekPeopleCount(employeeMapper.selectLeaveFormCountsByDays(3, empLeaFrom));
+//        }
+//
+//        return empLeaFromList;
+//    }
+//    @Override
+//    public List<EmpLeaFrom> getClasssInfoListLimt(Integer campus_id,Integer academy_id){
+//        List<EmpLeaFrom> empLeaFromList= employeeMapper.getEmpLeaFromClazzLimt(campus_id,academy_id);
+//
+//        for(EmpLeaFrom empLeaFrom:empLeaFromList) {
+//            empLeaFrom.setTodayPeopleCount(employeeMapper.selectLeaveFormCountsByDays(1, empLeaFrom));
+//            empLeaFrom.setYesterdayPeopleCount(employeeMapper.selectLeaveFormCountsByDays(2, empLeaFrom));
+//            empLeaFrom.setThisWeekPeopleCount(employeeMapper.selectLeaveFormCountsByDays(3, empLeaFrom));
+//        }
+//
+//        return empLeaFromList;
+//    }
     @Override
     public int getClasssInfoCount(){
         return employeeMapper.getClasssInfoCount();
     }
 
-    @Override
-    public List<Academy> getAcademyList(){
-        return employeeMapper.getAcademyList();
-    }
+//    @Override
+//    public List<Academy> getAcademyList(){
+//        return employeeMapper.getAcademyList();
+//    }
 
     @Override
     public int getCountEmployee(Map<String, Object> map) {

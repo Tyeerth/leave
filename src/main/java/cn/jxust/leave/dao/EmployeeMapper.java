@@ -1,8 +1,6 @@
 package cn.jxust.leave.dao;
 
-import cn.jxust.leave.po.Academy;
-import cn.jxust.leave.po.Employee;
-import cn.jxust.leave.po.vo.EmpLeaFrom;
+import cn.jxust.leave.pojo.Employee;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -95,13 +93,6 @@ public interface EmployeeMapper {
      */
     void delteMidle_form(String s);
 
-    /***
-     * @Description
-     *
-     * @Author   lcs
-     **/
-     List<EmpLeaFrom> getEmpLeaFromClazz(@Param("offset") int offset, @Param("limit") int limit);
-     List<EmpLeaFrom> getEmpLeaFromClazzLimt(@Param("campus_id") Integer campus_id, @Param("academy_id") Integer academy_id);
 
     /**
      * @Description
@@ -109,11 +100,10 @@ public interface EmployeeMapper {
      * @param timeType    时间范围: 1 ==> 今天, 2 ==> 昨天, 3 ==> 本周
      * @Author   lcs
      **/
-    int selectLeaveFormCountsByDays(@Param("timeType") int timeType, @Param("e") EmpLeaFrom empLeaFrom);
+//    int selectLeaveFormCountsByDays(@Param("timeType") int timeType, @Param("e") EmpLeaFrom empLeaFrom);
 
     int getClasssInfoCount();
 
-    List<Academy> getAcademyList();
 
     /**
      * 指定条件查询员工总数

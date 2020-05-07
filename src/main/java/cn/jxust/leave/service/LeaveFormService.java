@@ -1,7 +1,8 @@
 package cn.jxust.leave.service;
 
-import cn.jxust.leave.po.LeaveForm;
-import cn.jxust.leave.po.Student;
+import cn.jxust.leave.pojo.LeaveForm;
+import cn.jxust.leave.pojo.Student;
+import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -90,4 +91,17 @@ public interface LeaveFormService {
     void updateLeaveForm(LeaveForm leaveForm1);
 
     List<Integer> selectWeekLeaveFormCountsByDays();
+
+    PageInfo<LeaveForm> getCancelLeaveForm(Integer id,Integer pageNum,Integer pageSize);
+
+    /**
+     * 查询请假失败的请假表
+     * @param id
+     * @return
+     */
+    PageInfo<LeaveForm> getUnApprovedLeaveForm(Integer id,Integer pageNum,Integer pageSize);
+
+    PageInfo<LeaveForm> getStudentApprovingLeaveForm(Integer id, Integer pageNum, Integer pageSize);
+
+    PageInfo<LeaveForm> getApprovedLeaveForm(Integer id, Integer pageNum, Integer pageSize);
 }

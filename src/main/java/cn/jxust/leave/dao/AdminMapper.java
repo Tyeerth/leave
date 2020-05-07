@@ -1,7 +1,7 @@
 package cn.jxust.leave.dao;
 
-import cn.jxust.leave.po.Employee;
-import org.apache.ibatis.annotations.Param;
+import cn.jxust.leave.pojo.Employee;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,17 +10,17 @@ import org.springframework.stereotype.Repository;
  * @date 2019/11/13 - 19:27
  */
 @Repository
-public interface AdminMapper {
-    /**
-     * 修改管理员的信息。
-     * @param admin
-     */
-     void updateAdmin(Employee admin);
+public interface AdminMapper extends BaseMapper<Employee> {
+//    /**
+//     * 修改管理员的信息。
+//     * @param admin
+//     */
+//     void updateAdmin(Employee admin);
 
     /**
      * 实现管理员登入功能。
      * @param username
      * @return
      */
-    Employee getAdminByUserName(@Param(value = "username") String username);
+//    Employee getAdminByUserName(@Param(value = "username") String username);
 }

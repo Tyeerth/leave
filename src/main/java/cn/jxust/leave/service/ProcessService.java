@@ -1,7 +1,7 @@
 package cn.jxust.leave.service;
 
-import cn.jxust.leave.po.vo.StuLeaForPros;
-import  cn.jxust.leave.po.Process;
+import cn.jxust.leave.pojo.Process;
+
 import java.util.List;
 import java.util.Map;
 
@@ -68,5 +68,5 @@ public interface ProcessService {
      *    对应的请假的流程
      * @Author   lcs
      **/
-    List<StuLeaForPros> queryStudentProcessesListByStudentId(int studentId);
+//    List<StuLeaForPros> queryStudentProcessesListByStudentId(int studentId);
 }

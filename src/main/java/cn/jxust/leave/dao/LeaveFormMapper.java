@@ -1,6 +1,7 @@
 package cn.jxust.leave.dao;
 
-import cn.jxust.leave.po.LeaveForm;
+import cn.jxust.leave.pojo.LeaveForm;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +15,7 @@ import java.util.Map;
  * @date 2019/11/12 18:52
  */
 @Repository
-public interface LeaveFormMapper {
+public interface LeaveFormMapper extends BaseMapper<LeaveForm> {
 
     void saveLeaveForm(LeaveForm leaveForm) throws Exception;
 
@@ -110,7 +111,7 @@ public interface LeaveFormMapper {
      * @param map
      * @return
      */
-    List<LeaveForm> getApprovingLeaveFormById(Map<String, Object> map);
+//    List<LeaveForm> getApprovingLeaveFormById(Map<String, Object> map);
 
     /**
      * 修改请假表的信息
